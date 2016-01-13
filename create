@@ -1,0 +1,99 @@
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Server version:               5.6.15-log - MySQL Community Server (GPL)
+-- Server OS:                    Win32
+-- HeidiSQL Version:             9.1.0.4867
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+-- Dumping database structure for mydb
+CREATE DATABASE IF NOT EXISTS `mydb` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `mydb`;
+
+
+-- Dumping structure for table mydb.customertable
+CREATE TABLE IF NOT EXISTS `customertable` (
+  `customer_id` int(11) NOT NULL,
+  `customer_name` varchar(20) DEFAULT NULL,
+  `customer_address` varchar(100) DEFAULT NULL,
+  `customer_postcode` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`customer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+
+
+-- Dumping structure for table mydb.deliverytable
+CREATE TABLE IF NOT EXISTS `deliverytable` (
+  `delivery_id` int(11) NOT NULL,
+  `delivery_time` varchar(5) DEFAULT NULL,
+  `customertable_customer_id` int(11) NOT NULL,
+  PRIMARY KEY (`delivery_id`,`customertable_customer_id`),
+  KEY `fk_deliverytable_customertable1_idx` (`customertable_customer_id`),
+  CONSTRAINT `fk_deliverytable_customertable1` FOREIGN KEY (`customertable_customer_id`) REFERENCES `customertable` (`customer_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+
+
+-- Dumping structure for table mydb.ordertable
+CREATE TABLE IF NOT EXISTS `ordertable` (
+  `order_id` int(11) NOT NULL,
+  `order_product_id` int(11) DEFAULT NULL,
+  `order_item_quantity` int(11) DEFAULT NULL,
+  `order_item_placed` varchar(50) DEFAULT NULL,
+  `customertable_customer_id` int(50) NOT NULL,
+  PRIMARY KEY (`order_id`),
+  KEY `fk_ordertable_customertable_idx` (`customertable_customer_id`),
+  KEY `FK_ordertable_productstable` (`order_product_id`),
+  CONSTRAINT `fk_ordertable_customertable` FOREIGN KEY (`customertable_customer_id`) REFERENCES `customertable` (`customer_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_ordertable_productstable` FOREIGN KEY (`order_product_id`) REFERENCES `productstable` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+
+
+-- Dumping structure for table mydb.productstable
+CREATE TABLE IF NOT EXISTS `productstable` (
+  `product_id` int(11) NOT NULL,
+  `product_name` varchar(50) NOT NULL,
+  `product_price` int(11) DEFAULT NULL,
+  PRIMARY KEY (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+
+
+-- Dumping structure for table mydb.storestable
+CREATE TABLE IF NOT EXISTS `storestable` (
+  `store_id` int(11) NOT NULL,
+  `manager_id` int(11) DEFAULT NULL,
+  `store_address` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`store_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+
+
+-- Dumping structure for table mydb.supplierstable
+CREATE TABLE IF NOT EXISTS `supplierstable` (
+  `suppliers_id` int(11) NOT NULL,
+  `suppliers_address` varchar(50) DEFAULT NULL,
+  `suppliers_phone_number` int(11) DEFAULT NULL,
+  `storestable_store_id` int(50) NOT NULL,
+  `productstable_product_id` int(11) NOT NULL,
+  PRIMARY KEY (`suppliers_id`,`storestable_store_id`),
+  KEY `fk_Supplierstable_storestable1_idx` (`storestable_store_id`),
+  KEY `fk_Supplierstable_productstable1_idx` (`productstable_product_id`),
+  CONSTRAINT `fk_Supplierstable_productstable1` FOREIGN KEY (`productstable_product_id`) REFERENCES `productstable` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Supplierstable_storestable1` FOREIGN KEY (`storestable_store_id`) REFERENCES `storestable` (`store_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
